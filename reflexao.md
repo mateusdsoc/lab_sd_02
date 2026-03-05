@@ -45,4 +45,8 @@
 
 **T7**
 
-    
+    A falácia da computacao distribuida de Peter Deutsch que o anti_pattern viola diretamente é a primeira, "The network is reliable".
+
+    O aync/await é uma forma de quebrar a transparência, uma vez que eles comunicam que o código pode suspender porque ele espera algo externo, então não é instantâneo. É a decisão certa porque deixa a mostra os possíveis riscos que a chamada a essa função pode ter.
+
+
