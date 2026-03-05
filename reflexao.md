@@ -26,3 +26,23 @@
     Enquanto a relocação tem 3 estados (MIGRATING -> RECONNECTING -> CONNECTED), o boolean só tem 2, utilizar `is_relocating` necessitaria de outras flags ou condicionais aninhados para saber qual estado atual.
     
     Um exemplo é o live migration de VMs, onde a memória e CPU são copiadas para outro host físico enquanto a VM ainda está rodando, sem derrubar as conexões ativas.
+
+**T5**
+
+    O código não implementa o read-your-writes, porque o pick_replica() está fazendo uma escolha aleatória entre as réplicas. Para garantir read-your-writes, as leituras que seguem uma escrita precisariam ser forçadas para o master, pelo menos até a replicação ser confirmada.
+
+    Usar recursão no fallback é perigoso porque, se o master também falhar, a função chama a si mesma de novo até estourar a pilha. A versão atual resolve isso chamando connect(master_dsn) sem passar pelo query() de novo.
+
+**T6**
+
+    O saldo no Redis varia, em algumas execuções é 800 e em outras 700.
+
+    Essa tarefa utiliza multiprocessing e não threading porque o threading utilizando python tem o CPython possui o GIL (Global Interpreter Lock), que impede que duas threads executem bytecode Python simultaneamente no mesmo processo. Isso significa que uma race condition com threading pode nao se manifestar de forma reproduzivel — tornando a demonstracao pedagogicamente imprecisa. Com multiprocessing cada processo tem seu proprio espaco de memoria e proprio GIL: a race condition e real, reproduzivel, e reflete com mais fidelidade o cenario de sistemas distribuidos, onde os processos concorrentes estao em maquinas diferentes.
+
+    O threading.Lock() existe na RAM de um processo, não podendo ser compartilhado entre eles, enquanto o distributed_lock utiliza o Redis, todos os processos enxergam.
+
+    Se o processo travar antes de chegar no finally teoricamente ocorreria um deadlock, entretanto, como foi definido ex=ttl, e no nosso caso ttl=5, o redis apaga a chave sozinho se depois de 5 segundos. Entretanto, existem riscos, caso o ttl seja muito curto, acaba antes da seção crítica finalizar, e também se ele for muito longo, se um processo travar os outros ficam esperando durante muito tempo.
+
+**T7**
+
+    
