@@ -1,4 +1,5 @@
 # Reflexão
+
 **T1**
 
     Para mudarmos de conexão local para http, o código não precisou mudar, somente o env, configurando diretamente no terminal. E o http falhou como esperado.
@@ -49,4 +50,14 @@
 
     O aync/await é uma forma de quebrar a transparência, uma vez que eles comunicam que o código pode suspender porque ele espera algo externo, então não é instantâneo. É a decisão certa porque deixa a mostra os possíveis riscos que a chamada a essa função pode ter.
 
+**Bloco de Reflexão**
 
+    1. Na minha opinião, a Transparência de Falha é o mais difícil de se implementar, dada sua importância. Os usuários muitas vezes param de utilizar uma aplicação por causa dos erros, e o trabalho do desenvolvedor com a transparência de falha é justamente ocular os erros aos olhos de quem utiliza o sistema. Além disso, a transparência de falha utiliza os outros conceitos, como por exemplo ao assistir um vídeo da netflix, se o player travar, automaticamente o algoritmo deve tentar se reconectar a outro servidor que tenha o mesmo filme/série, utilizando nesse caso a transparência de replicação. Não só isso, mas como também a parte que pra mim é a mais difícil, sobre o async e await, quando utilizar e quando não utilizar, comentado nos exercícios.
+
+    2. O Valorant é um FPS tático que costumo jogar nos finais de semana, dado essa categoria, ele mostra inúmeros problemas como perda de pacote, FPS baixo, ping alto e outras estatísticas que você pode adicionar. Se o jogo adotasse uma transparência de falha total, o usuário poderia estar travando e não iria saber se é o fps, o ping ou a perda de pacote.
+
+    3. O async e await quebram essa transparência no código, uma vez que eles mostram que o sistema depende de algo externo, que pode ser que demore. No exercício t7_falha, é possível ver que tentar mascarar totalmente quebra o conceito de "The network is reliable" porque esconde falhas de rede.
+
+    4. A tarefa 6 utiliza multiprocessing ao invés de threading por didática. O Python tem o GIL(Global Interpreter Lock) que tem função de impedir duas threads de executarem bytecode Python simultaneamente no mesmo processo, possibilitando uma race condition de não se manifestar de forma reproduzível, entretanto em multithreading cada processo tem seu próprio espaço de memória e seu próprio GIL, então como estamos utilizando Python para facilitar a didática o multithreading é melhor.
+
+    5. Uma dificuldade técnica encontrada durante o laboratório foi que todos os alunos estavam criando conta no Redis utilizando a mesma rede da PUC em um intervalo curto de tempo, então o Redis baniu a rede da PUC por um perído, provavelmente o algoritmo identificou um falso ataque.
